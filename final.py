@@ -1,17 +1,24 @@
 import pandas as pd
 
-# Чтение данных из файла friends.csv и выбор нужных столбцов
-friends_data = pd.read_csv('friends.csv', usecols=['ID', 'name', 'surname'])
+# Чтение данных из файла friends.csv
+data = pd.read_csv('friends.csv')
 
-# Распарсивание списка значений в столбце friends_expanded.csv и запись каждого значения в отдельную ячейку
-expanded_data = pd.read_csv('friends_expanded.csv', header=None)
-expanded_data = expanded_data[0].astype(str).str.split(',', expand=True)
+# Копирование столбцов ID, name, surname без изменений в новый DataFrame
+final_data = data[['ID', 'name', 'surname']].copy()
 
-# Объединение данных из friends.csv и распарсенного списка в один файл
-final_data = pd.concat([friends_data, expanded_data], axis=1)
+# Распарсить список значений из столбца "friends"
+parsed_friends = []
+for friends_list in data['friends']:
+    parsed_friends.append(eval(friends_list))
 
-# Запись данных в файл final.csv
+# Добавить столбец "friends" с распарсенными значениями в final_data
+final_data['friends'] = parsed_friends
+
+# Расширить DataFrame, чтобы каждый айди был в отдельной ячейке
+final_data = final_data.explode('friends')
+
+# Запись данных в новый файл final.csv
 final_data.to_csv('final.csv', index=False)
 
-# Преобразование файла в формат xlsx
-final_data.to_excel('final.xlsx', index=False, engine='openpyxl')
+# Конвертация в формат xls
+final_data.to_excel('final.xls', index=False)

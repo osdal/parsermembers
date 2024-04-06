@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Чтение данных из файла friends.csv
-data = pd.read_csv('friends.csv')
+data = pd.read_csv('friends_cleaned.csv')
 
 # Копирование столбцов ID, name, surname без изменений в новый DataFrame
 final_data = data[['ID', 'name', 'surname']].copy()
